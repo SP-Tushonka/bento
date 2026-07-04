@@ -27,17 +27,17 @@ public static class AssembleStep
     {
         Fs.DeleteDirectory(ctx.StagingDir);
         var release = ctx.ReleaseDir;
-        var sptDir = Path.Combine(release, "SPT");
-        Directory.CreateDirectory(sptDir);
+        var sptRuntimeDir = Path.Combine(release, "SPT_Runtime");
+        Directory.CreateDirectory(sptRuntimeDir);
 
         log.Status(Stage, "merging server artifacts...");
-        Fs.CopyDirectory(server.LinuxPublishDir, sptDir, ExcludePdb);
-        Fs.CopyDirectory(server.WinPublishDir, sptDir, ExcludePdb);
+        Fs.CopyDirectory(server.LinuxPublishDir, sptRuntimeDir, ExcludePdb);
+        Fs.CopyDirectory(server.WinPublishDir, sptRuntimeDir, ExcludePdb);
 
         log.Status(Stage, "merging launcher artifacts...");
-        Fs.CopyDirectory(launcherBuildDir, sptDir);
+        Fs.CopyDirectory(launcherBuildDir, sptRuntimeDir);
 
-        // Modules land at the release root, not under SPT/.
+        // Modules land at the release root, not under SPT_Runtime/.
         log.Status(Stage, "merging modules artifacts...");
         Fs.CopyDirectory(modulesBuildDir, release);
 
