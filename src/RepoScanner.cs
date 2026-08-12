@@ -12,6 +12,7 @@ public static class RepoScanner
     public static bool LooksLikeServer(string dir)
     {
         return File.Exists(Path.Combine(dir, "server-csharp.slnx"))
+            || Directory.Exists(Path.Combine(dir, "Libraries", "SPTushonka.Server.Core"))
             || Directory.Exists(Path.Combine(dir, "Libraries", "SPTarkov.Server.Core"));
     }
 
@@ -20,7 +21,8 @@ public static class RepoScanner
     /// </summary>
     public static bool LooksLikeModules(string dir)
     {
-        return Directory.Exists(Path.Combine(dir, "project", "Shared"));
+        return Directory.Exists(Path.Combine(dir, "project", "Shared"))
+            || File.Exists(Path.Combine(dir, "Modules.slnx"));
     }
 
     /// <summary>

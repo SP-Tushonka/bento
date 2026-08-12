@@ -112,15 +112,7 @@ public static class Preflight
     /// </summary>
     public static void CheckServerLfs(string serverPath)
     {
-        var marker = Path.Combine(
-            serverPath,
-            "Libraries",
-            "SPTarkov.Server.Assets",
-            "SPT_Data",
-            "database",
-            "templates",
-            "items.json"
-        );
+        var marker = ServerLayout.Detect(serverPath).AssetPath("database", "templates", "items.json");
 
         // THe real content is much larger than a pointer file... skip when the marker is missing or already large.
         if (!File.Exists(marker) || new FileInfo(marker).Length > 1024)
@@ -145,14 +137,7 @@ public static class Preflight
     /// </summary>
     public static string ReadClientVersion(string serverPath)
     {
-        var coreJsonPath = Path.Combine(
-            serverPath,
-            "Libraries",
-            "SPTarkov.Server.Assets",
-            "SPT_Data",
-            "configs",
-            "core.json"
-        );
+        var coreJsonPath = ServerLayout.Detect(serverPath).AssetPath("configs", "core.json");
         if (!File.Exists(coreJsonPath))
         {
             throw new BentoException(

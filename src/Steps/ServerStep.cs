@@ -25,6 +25,7 @@ public static class ServerStep
     )
     {
         var repo = ctx.Server!;
+        var layout = ServerLayout.Detect(repo.Path);
 
         // Publishes platforms one at a time (both share the obj/ directory, so concurrent publishes race).
         foreach (var platform in Platforms)
@@ -33,7 +34,7 @@ public static class ServerStep
             string[] arguments =
             [
                 "publish",
-                "./SPTarkov.Server/SPTarkov.Server.csproj",
+                layout.ServerProjectFile,
                 "-c",
                 ctx.BuildConfig,
                 "-f",
@@ -63,7 +64,10 @@ public static class ServerStep
             }
         }
 
-        var artifacts = new ServerArtifacts(PublishDir("win-x64"), PublishDir("linux-x64"));
+        var artifacts = new ServerArtifacts(
+            layout.PublishDir(ctx.BuildConfig, "win-x64"),
+            layout.PublishDir(ctx.BuildConfig, "linux-x64")
+        );
         foreach (var directory in new[] { artifacts.WinPublishDir, artifacts.LinuxPublishDir })
         {
             if (!Directory.Exists(directory))
@@ -73,11 +77,5 @@ public static class ServerStep
         }
 
         return artifacts;
-
-        // The publish output directory for one platform.
-        string PublishDir(string platform)
-        {
-            return Path.Combine(repo.Path, "SPTarkov.Server", "bin", ctx.BuildConfig, "net10.0", platform, "publish");
-        }
     }
 }

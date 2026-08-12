@@ -19,6 +19,8 @@ public sealed record ManifestArchive(string Name, long SizeBytes, string SizeDis
 /// </summary>
 public sealed record ManifestNuGet(string Version, IReadOnlyList<string> Packages);
 
+public sealed record ManifestRelease(string Channel, string RuntimeFolderName);
+
 /// <summary>
 /// The record of what went into the build, written as manifest.json next to the archive. This is Bento's CI interface;
 /// workflows parse it instead of Bento emitting CI-specific outputs.
@@ -33,6 +35,7 @@ public sealed record Manifest(
     string ClientVersion,
     string? Tag,
     ManifestArchive Archive,
+    ManifestRelease Release,
     [property: JsonPropertyName("nuget")] ManifestNuGet NuGet,
     Dictionary<string, ManifestRepo> Repos
 )

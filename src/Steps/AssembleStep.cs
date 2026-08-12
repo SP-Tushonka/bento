@@ -9,6 +9,7 @@ namespace Bento.Steps;
 public static class AssembleStep
 {
     public const string Stage = "assemble";
+    public const string RuntimeFolderName = "SPT_Runtime";
 
     private static readonly string[] PruneFileNames =
     [
@@ -27,7 +28,7 @@ public static class AssembleStep
     {
         Fs.DeleteDirectory(ctx.StagingDir);
         var release = ctx.ReleaseDir;
-        var sptRuntimeDir = Path.Combine(release, "SPT_Runtime");
+        var sptRuntimeDir = Path.Combine(release, RuntimeFolderName);
         Directory.CreateDirectory(sptRuntimeDir);
 
         log.Status(Stage, "merging server artifacts...");

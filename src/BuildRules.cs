@@ -107,6 +107,22 @@ public static partial class BuildRules
     }
 
     /// <summary>
+    /// The release channel a version publishes into: its major.minor. The installer keys one entry per channel in
+    /// release.json, so 4.1.2 and 4.1.3 both replace the "4.1" entry rather than adding to it.
+    /// </summary>
+    public static string ChannelFrom(string version)
+    {
+        var major = version.IndexOf('.');
+        if (major < 0)
+        {
+            return version;
+        }
+
+        var minor = version.IndexOf('.', major + 1);
+        return minor < 0 ? version : version[..minor];
+    }
+
+    /// <summary>
     /// Last dot-segment of core.json's compatibleTarkovVersion.
     /// </summary>
     public static string ClientVersionFrom(string compatibleTarkovVersion)

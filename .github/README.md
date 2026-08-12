@@ -1,12 +1,12 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/sp-tarkov/bento/main/.github/images/banner.png" alt="Bento">
+<img src="https://raw.githubusercontent.com/SP-Tushonka/bento/main/.github/images/banner.png" alt="Bento">
 </p>
 
-[![Build](https://github.com/sp-tarkov/bento/actions/workflows/tests.yml/badge.svg)](https://github.com/sp-tarkov/bento/actions/workflows/tests.yml)
+[![Build](https://github.com/SP-Tushonka/bento/actions/workflows/tests.yml/badge.svg)](https://github.com/SP-Tushonka/bento/actions/workflows/tests.yml)
 [![.NET](https://img.shields.io/badge/.NET-10-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Licence](https://img.shields.io/badge/licence-AGPL--3.0-blue.svg)](../LICENSE)
 
-Bento is a .NET 10 command-line tool that builds and packages a Single Player Tarkov release. It builds the server, modules, and launcher, assembles them with static assets, and writes the archive alongside a `manifest.json`.
+Bento is a .NET 10 command-line tool that builds and packages a Single Player Tushonka release. It builds the server, modules, and launcher, assembles them with static assets, and writes the archive alongside a `manifest.json`.
 
 Supported SPT versions: `> 4.1.0`
 
@@ -22,7 +22,7 @@ Supported SPT versions: `> 4.1.0`
 Clone the repository and build it with the .NET SDK:
 
 ```
-git clone https://github.com/sp-tarkov/bento.git
+git clone https://github.com/SP-Tushonka/bento.git
 cd bento
 dotnet build
 ```

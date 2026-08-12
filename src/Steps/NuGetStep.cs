@@ -13,18 +13,6 @@ public static class NuGetStep
 {
     public const string Stage = "nuget";
 
-    // The packable server libraries. dotnet pack emits a .nupkg per packable project in the solution; only these are
-    // recorded, matching the packages the release workflow publishes.
-    private static readonly string[] PackageIds =
-    [
-        "SPTarkov.Common",
-        "SPTarkov.DI",
-        "SPTarkov.Reflection",
-        "SPTarkov.Server.Assets",
-        "SPTarkov.Server.Web",
-        "SPTarkov.Server.Core",
-    ];
-
     /// <summary>
     /// Packs the server solution into NuGetDir, prunes any .nupkg the orchestrating workflow does not publish, then
     /// returns the recorded packages.
@@ -37,6 +25,7 @@ public static class NuGetStep
     {
         var repo = ctx.Server!;
         var version = BuildRules.NuGetVersion(ctx.BuildType, ctx.Version, ctx.BuildTimeUtc);
+        var packageIds = ServerLayout.Detect(repo.Path).PackageIds();
         Directory.CreateDirectory(ctx.NuGetDir);
 
         log.Status(Stage, $"packing {version} ({ctx.BuildConfig})...");
@@ -54,7 +43,7 @@ public static class NuGetStep
         }
 
         var packages = new List<NuGetPackage>();
-        foreach (var id in PackageIds)
+        foreach (var id in packageIds)
         {
             var file = Path.Combine(ctx.NuGetDir, $"{id}.{version}.nupkg");
             if (File.Exists(file))

@@ -40,6 +40,20 @@ public class BuildRulesTests
     }
 
     /// <summary>
+    /// Reduces a version to the major.minor channel its release.json entry is keyed by.
+    /// </summary>
+    [TestCase("4.1.2", ExpectedResult = "4.1")]
+    [TestCase("4.1.0", ExpectedResult = "4.1")]
+    [TestCase("4.0.13", ExpectedResult = "4.0")]
+    [TestCase("4.10.0", ExpectedResult = "4.10")]
+    [TestCase("4.1", ExpectedResult = "4.1")]
+    [TestCase("4", ExpectedResult = "4")]
+    public string ChannelFrom(string version)
+    {
+        return BuildRules.ChannelFrom(version);
+    }
+
+    /// <summary>
     /// Maps each build type to the MSBuild configuration it compiles under.
     /// </summary>
     [TestCase(SptBuildType.Release, ExpectedResult = "Release")]

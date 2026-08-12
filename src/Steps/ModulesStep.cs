@@ -18,12 +18,7 @@ public static class ModulesStep
     )
     {
         var repo = ctx.Modules!;
-        var projectDir = Path.Combine(repo.Path, "project");
-        if (!Directory.Exists(projectDir))
-        {
-            throw new StageFailedException(Stage, $"The modules repo has no project/ directory: {projectDir}");
-        }
-
+        var projectDir = ResolveProjectDir(repo.Path);
         var managedDir = Path.Combine(projectDir, "Shared", "Managed");
         if (modulePackage.IsDirectory)
         {
@@ -63,5 +58,26 @@ public static class ModulesStep
         }
 
         return buildDir;
+    }
+
+    /// <summary>
+    /// The directory the modules solution builds from. The projects were lifted out of project/ to the repo root, so
+    /// both arrangements are probed by the Shared/ directory every tag has.
+    /// </summary>
+    private static string ResolveProjectDir(string repoPath)
+    {
+        foreach (var candidate in new[] { repoPath, Path.Combine(repoPath, "project") })
+        {
+            if (Directory.Exists(Path.Combine(candidate, "Shared")))
+            {
+                return candidate;
+            }
+        }
+
+        throw new StageFailedException(
+            Stage,
+            $"No modules project layout found under {repoPath}.",
+            "Expected a Shared/ directory at the repo root or under project/."
+        );
     }
 }

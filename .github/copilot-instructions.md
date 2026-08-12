@@ -2,7 +2,7 @@
 
 ## Project Summary
 
-Bento is a .NET 10 command-line tool (`bento`) that builds and packages a Single Player Tarkov (SPT) release. It builds three repositories — server (`server-csharp`), modules, and launcher, assembles their outputs with static assets from `assets/`, and writes a `.7z` archive plus a `manifest.json` to the output directory.
+Bento is a .NET 10 command-line tool (`bento`) that builds and packages a Single Player Tushonka (SPT) release. It builds three repositories — server (`server-csharp`), modules, and launcher, assembles their outputs with static assets from `assets/`, and writes a `.7z` archive plus a `manifest.json` to the output directory.
 
 **Stack:** .NET 10, C# (nullable enabled, implicit usings), Spectre.Console + Spectre.Console.Cli for the CLI, NUnit for tests, CSharpier for formatting. Ships a `Dockerfile` for fresh/distribution builds.
 

@@ -69,6 +69,7 @@ public static class PackageStep
             ClientVersion: ctx.ClientVersion!,
             Tag: ctx.Tag,
             Archive: new ManifestArchive(archiveName, sizeBytes, Fs.FormatSize(sizeBytes), md5Base64),
+            Release: new ManifestRelease(BuildRules.ChannelFrom(ctx.Version), AssembleStep.RuntimeFolderName),
             NuGet: new ManifestNuGet(
                 packages.Count > 0
                     ? packages[0].Version

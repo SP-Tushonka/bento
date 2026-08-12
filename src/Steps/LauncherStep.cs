@@ -20,25 +20,17 @@ public static class LauncherStep
     )
     {
         var repo = ctx.Launcher!;
-        var projectDir = Path.Combine(repo.Path, "project");
-        var csproj = Path.Combine(projectDir, "SPTarkov.Launcher", "SPTarkov.Launcher.csproj");
-        if (!File.Exists(csproj))
-        {
-            throw new StageFailedException(
-                Stage,
-                $"Launcher project not found: {csproj}",
-                "Bento targets the launcher build system from 4.1 onward."
-            );
-        }
+        var layout = LauncherLayout.Detect(repo.Path);
+        var projectDir = layout.ProjectRoot;
 
-        // Publishes one platform at a time; the publishes share obj/ and each one's SPTBuildEvent wipes project/Build.
+        // Publishes one platform at a time; the publishes share obj/ and each one's SPTBuildEvent wipes Build.
         foreach (var platform in Platforms)
         {
             log.Status(Stage, $"publishing {platform} (Release)...");
             string[] arguments =
             [
                 "publish",
-                "./SPTarkov.Launcher/SPTarkov.Launcher.csproj",
+                layout.CsprojRelative,
                 "-c",
                 "Release",
                 "--self-contained",
@@ -49,6 +41,9 @@ public static class LauncherStep
                 platform,
                 "-p:PublishSingleFile=true",
                 $"-p:SptVersion={ctx.Version}",
+                // Without this the launcher's Build.props falls back to its placeholder, shipping a fake commit hash
+                // in InformationalVersion.
+                $"-p:SptCommitTag={repo.Commit}",
             ];
             var exitCode = await ProcessRunner.RunAsync(
                 "dotnet",
@@ -64,17 +59,8 @@ public static class LauncherStep
         }
 
         // The Linux publish wipes Build (and the Windows exe). Copy the exe back in from its own publish directory.
-        var buildDir = Path.Combine(projectDir, "Build");
-        var winExe = Path.Combine(
-            projectDir,
-            "SPTarkov.Launcher",
-            "bin",
-            "Release",
-            "net10.0",
-            "win-x64",
-            "publish",
-            "SPT.Launcher.exe"
-        );
+        var buildDir = layout.BuildDir;
+        var winExe = layout.PublishedExe("win-x64", "SPT.Launcher.exe");
         if (!File.Exists(winExe))
         {
             throw new StageFailedException(Stage, $"Windows launcher exe missing: {winExe}");

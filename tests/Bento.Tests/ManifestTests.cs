@@ -46,7 +46,8 @@ public class ManifestTests
             ClientVersion: "40743",
             Tag: "4.1.0-BE-WorkflowTest",
             Archive: new ManifestArchive("SPT.7z", 1, "1 B", "aaaa"),
-            NuGet: new ManifestNuGet("4.1.0-pre.202606200319", ["SPTarkov.Common", "SPTarkov.Server.Core"]),
+            Release: new ManifestRelease("4.1", "SPT_Runtime"),
+            NuGet: new ManifestNuGet("4.1.0-pre.202606200319", ["SPTushonka.Common", "SPTushonka.Server.Core"]),
             Repos: new Dictionary<string, ManifestRepo> { ["server"] = new(null, "8b066d0", false) }
         );
     }

@@ -6,9 +6,9 @@ namespace Bento.Steps;
 /// </summary>
 public static class FreshCloneStep
 {
-    public const string ServerUrl = "https://github.com/sp-tarkov/server-csharp.git";
-    public const string ModulesUrl = "https://github.com/sp-tarkov/modules.git";
-    public const string LauncherUrl = "https://github.com/sp-tarkov/launcher.git";
+    public const string ServerUrl = "https://github.com/SP-Tushonka/server-csharp.git";
+    public const string ModulesUrl = "https://github.com/SP-Tushonka/modules.git";
+    public const string LauncherUrl = "https://github.com/SP-Tushonka/launcher.git";
 
     private static readonly (string Name, string Url)[] Repos =
     [
