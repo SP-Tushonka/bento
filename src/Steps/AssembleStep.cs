@@ -80,7 +80,7 @@ public static class AssembleStep
         }
 
         log.Status(Stage, "overlaying static assets...");
-        Fs.CopyDirectory(StaticAssetsDir(), release);
+        Fs.CopyDirectory(StaticAssetsDir(ctx), release);
     }
 
     /// <summary>
@@ -108,11 +108,11 @@ public static class AssembleStep
     }
 
     /// <summary>
-    /// Returns the assets/ directory next to the bento binary, throwing when it is missing.
+    /// Returns the assets flavour next to the bento binary, mono for 4.x and il2cpp from 5.0, throwing when missing.
     /// </summary>
-    private static string StaticAssetsDir()
+    private static string StaticAssetsDir(BuildContext ctx)
     {
-        var directory = Path.Combine(AppContext.BaseDirectory, "assets");
+        var directory = Path.Combine(AppContext.BaseDirectory, "assets", ctx.Il2Cpp ? "il2cpp" : "mono");
         if (!Directory.Exists(directory))
         {
             throw new BentoException(

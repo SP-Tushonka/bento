@@ -123,6 +123,15 @@ public static partial class BuildRules
     }
 
     /// <summary>
+    /// The leading number of an X.Y.Z version.
+    /// </summary>
+    public static int MajorOf(string version)
+    {
+        var dot = version.IndexOf('.');
+        return int.Parse(dot < 0 ? version : version[..dot]);
+    }
+
+    /// <summary>
     /// Last dot-segment of core.json's compatibleTarkovVersion.
     /// </summary>
     public static string ClientVersionFrom(string compatibleTarkovVersion)

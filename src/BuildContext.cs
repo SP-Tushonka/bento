@@ -30,6 +30,11 @@ public sealed class BuildContext
     public ModulePackageSource? PackageSource => ModulePackageSource.Parse(ModulePackage);
 
     /// <summary>
+    /// 5.0 moved to the il2cpp client. It changes the static assets and how the modules build.
+    /// </summary>
+    public bool Il2Cpp => BuildRules.MajorOf(Version) >= 5;
+
+    /// <summary>
     /// The MSBuild configuration (Release or Debug) this build type compiles under.
     /// </summary>
     public string BuildConfig => BuildRules.BuildConfigFor(BuildType);

@@ -39,6 +39,14 @@ public class BuildRulesTests
         return BuildRules.VersionFromTag(tag);
     }
 
+    [TestCase("4.1.5", ExpectedResult = 4)]
+    [TestCase("5.0.0", ExpectedResult = 5)]
+    [TestCase("10.2.1", ExpectedResult = 10)]
+    public int MajorOf(string version)
+    {
+        return BuildRules.MajorOf(version);
+    }
+
     /// <summary>
     /// Reduces a version to the major.minor channel its release.json entry is keyed by.
     /// </summary>

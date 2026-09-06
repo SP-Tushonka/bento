@@ -26,11 +26,13 @@ public static class RepoScanner
     }
 
     /// <summary>
-    /// Reports whether dir holds the launcher repo, by its project/SPTarkov.Launcher directory.
+    /// Reports whether dir holds the launcher repo, by its launcher project under project/ or at the root.
     /// </summary>
     public static bool LooksLikeLauncher(string dir)
     {
-        return Directory.Exists(Path.Combine(dir, "project", "SPTarkov.Launcher"));
+        return Directory.Exists(Path.Combine(dir, "project", "SPTarkov.Launcher"))
+            || Directory.Exists(Path.Combine(dir, "SPTushonka.Launcher"))
+            || Directory.Exists(Path.Combine(dir, "SPTarkov.Launcher"));
     }
 
     /// <summary>
