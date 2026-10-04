@@ -1513,6 +1513,11 @@
                BepInEx version without the build suffix.
             </summary>
         </member>
+        <member name="F:BepInEx.Paths.DisplayName">
+            <summary>
+               Name shown in the console title, the log and error dialogs. Folders and files keep the BepInEx name.
+            </summary>
+        </member>
         <member name="P:BepInEx.Paths.ManagedPath">
             <summary>
                 The path to the Managed folder that contains the main managed assemblies.

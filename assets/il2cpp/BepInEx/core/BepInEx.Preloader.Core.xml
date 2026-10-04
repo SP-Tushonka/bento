@@ -306,7 +306,7 @@
         </member>
         <member name="M:BepInEx.Preloader.Core.PlatformUtils.SetPlatform">
             <summary>
-                Recreation of MonoMod's PlatformHelper.DeterminePlatform method, but with libc calls instead of creating processes.
+                Collects the OS version details that MonoMod's PlatformDetection does not expose.
             </summary>
         </member>
     </members>
