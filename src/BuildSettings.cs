@@ -47,6 +47,12 @@ public sealed class BuildSettings : CommandSettings
     )]
     public string? ModulePackage { get; init; }
 
+    [CommandOption("--version-dll <FILE>")]
+    [Description(
+        "The loader's version.dll built for this release's client. Required for il2cpp (5.x) builds, ignored for 4.x. Overrides VERSION_DLL."
+    )]
+    public string? VersionDll { get; init; }
+
     [CommandOption("--output <DIR>")]
     [Description("Where the .7z, manifest.json and logs land.")]
     public string? Output { get; init; }
@@ -80,6 +86,11 @@ public sealed class BuildSettings : CommandSettings
         )
         {
             return ValidationResult.Error("--module-package must be an http(s):// URL or a local directory path.");
+        }
+
+        if (VersionDll is not null && !File.Exists(VersionDll))
+        {
+            return ValidationResult.Error($"--version-dll {VersionDll} does not exist.");
         }
 
         if (Fresh && Tag is null)

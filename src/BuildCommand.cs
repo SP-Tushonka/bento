@@ -239,6 +239,18 @@ public sealed class BuildCommand : AsyncCommand<BuildSettings>
                 : null;
         }
 
+        var versionDll = settings.VersionDll;
+        if (string.IsNullOrWhiteSpace(versionDll))
+        {
+            var fromEnv = Environment.GetEnvironmentVariable("VERSION_DLL");
+            versionDll = string.IsNullOrWhiteSpace(fromEnv) ? null : fromEnv;
+        }
+
+        if (versionDll is not null && !File.Exists(versionDll))
+        {
+            throw new BentoException($"VERSION_DLL {versionDll} does not exist.", "Point it at the version.dll the loader build produced.");
+        }
+
         // Repo paths (dev mode)
         string? serverPath = null;
         string? modulesPath = null;
@@ -292,12 +304,21 @@ public sealed class BuildCommand : AsyncCommand<BuildSettings>
             Tag = settings.Tag,
             OutputDir = output,
             ModulePackage = modulePackage,
+            VersionDll = versionDll is null ? null : Path.GetFullPath(versionDll),
             BuildTimeUtc = DateTime.UtcNow,
             Tools = tools,
             DevServerPath = serverPath,
             DevModulesPath = modulesPath,
             DevLauncherPath = launcherPath,
         };
+
+        if (ctx.Il2Cpp && ctx.VersionDll is null)
+        {
+            throw new BentoException(
+                $"SPT {ctx.Version} builds need the loader's version.dll for their client.",
+                "Pass --version-dll <file> or set VERSION_DLL to the version.dll built from IL2CPP-Loader at the release tag."
+            );
+        }
 
         if (ctx.Fresh)
         {

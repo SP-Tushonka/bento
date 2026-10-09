@@ -11,6 +11,12 @@ public sealed class BuildContext
     public string? Tag { get; init; }
     public required string OutputDir { get; init; }
     public string? ModulePackage { get; set; }
+
+    /// <summary>
+    /// The loader's version.dll built for this release's client, required for il2cpp builds.
+    /// </summary>
+    public string? VersionDll { get; init; }
+
     public required DateTime BuildTimeUtc { get; init; }
     public required ToolSet Tools { get; init; }
 

@@ -81,6 +81,34 @@ public static class AssembleStep
 
         log.Status(Stage, "overlaying static assets...");
         Fs.CopyDirectory(StaticAssetsDir(ctx), release);
+        AddVersionDll(ctx, release, log);
+    }
+
+    /// <summary>
+    /// Adds the loader's version.dll built for this release's client.
+    /// </summary>
+    /// <param name="ctx">Build context</param>
+    /// <param name="release">Release tree being assembled</param>
+    /// <param name="log">Build log</param>
+    private static void AddVersionDll(BuildContext ctx, string release, BuildLogger log)
+    {
+        if (!ctx.Il2Cpp)
+        {
+            if (ctx.VersionDll is not null)
+            {
+                log.Line(Stage, "warning: --version-dll ignored, mono builds have no loader");
+            }
+
+            return;
+        }
+
+        if (ctx.VersionDll is null)
+        {
+            throw new BentoException("No version.dll for this il2cpp release.", "Pass --version-dll <file> or set VERSION_DLL.");
+        }
+
+        File.Copy(ctx.VersionDll, Path.Combine(release, "version.dll"), true);
+        log.Line(Stage, $"version.dll from {ctx.VersionDll}");
     }
 
     /// <summary>

@@ -19,6 +19,34 @@ public class BuildSettingsTests
     }
 
     /// <summary>
+    /// --version-dll rejects a file that does not exist.
+    /// </summary>
+    [Test]
+    public void VersionDllMustExist()
+    {
+        var settings = new BuildSettings { VersionDll = Path.Combine(Path.GetTempPath(), "missing", "version.dll") };
+        Assert.That(settings.Validate().Successful, Is.False);
+    }
+
+    /// <summary>
+    /// --version-dll accepts an existing file.
+    /// </summary>
+    [Test]
+    public void VersionDllAcceptsExistingFile()
+    {
+        var file = Path.GetTempFileName();
+        try
+        {
+            var settings = new BuildSettings { VersionDll = file };
+            Assert.That(settings.Validate().Successful, Is.True);
+        }
+        finally
+        {
+            File.Delete(file);
+        }
+    }
+
+    /// <summary>
     /// --module-package accepts an http(s) base URL.
     /// </summary>
     [Test]
