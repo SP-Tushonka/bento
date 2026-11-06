@@ -19,8 +19,8 @@ public static class NodeServerStep
         var toolchain = NodeToolchain.Resolve(projectDir);
         await VerifyNodeAsync(toolchain, log);
 
-        var asOf = await CommitDateAsync(ctx.Server.Path);
-        log.Status(Stage, $"installing npm dependencies (node {toolchain.Version}, as of {asOf})...");
+        var (asOf, dated) = await DependencyDateAsync(ctx.Server.Path);
+        log.Status(Stage, $"installing npm dependencies (node {toolchain.Version}, as of {asOf} from {dated})...");
         await RunNpmAsync(
             toolchain,
             ["install", $"--before={asOf}"],
@@ -104,19 +104,26 @@ public static class NodeServerStep
             throw new StageFailedException(Stage, $"Server {what} failed (exit {exitCode}).");
         }
     }
-
-    private static async Task<string> CommitDateAsync(string repoPath)
+    
+    private static async Task<(string AsOf, string Revision)> DependencyDateAsync(string repoPath)
     {
+        var (described, tag, _) = await ProcessRunner.CaptureAsync(
+            "git",
+            ["describe", "--tags", "--abbrev=0"],
+            repoPath
+        );
+        var revision = described == 0 && tag.Trim() is { Length: > 0 } found ? found : "HEAD";
+
         var (exitCode, stdOut, stdErr) = await ProcessRunner.CaptureAsync(
             "git",
-            ["show", "-s", "--format=%cs", "HEAD"],
+            ["show", "-s", "--format=%cs", $"{revision}^{{commit}}"],
             repoPath
         );
         if (exitCode != 0 || stdOut.Trim().Length == 0)
         {
-            throw new StageFailedException(Stage, $"Could not read the server commit date: {stdErr.Trim()}");
+            throw new StageFailedException(Stage, $"Could not read the date of {revision}: {stdErr.Trim()}");
         }
 
-        return stdOut.Trim();
+        return (stdOut.Trim(), revision);
     }
 }
