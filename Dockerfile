@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends git git-lfs p7z
 # before its powershell.linux-x64 package, which fails the install.
 RUN dotnet tool install --tool-path /usr/local/bin PowerShell --version 7.6.10
 
+RUN curl -fsSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh \
+    && bash /tmp/dotnet-install.sh --runtime dotnet --channel 9.0 --install-dir /usr/share/dotnet --skip-non-versioned-files \
+    && rm /tmp/dotnet-install.sh
+
 # For older 3.x builds, install their node versions
 RUN set -eux; \
     for version in 20.11.1 22.12.0; do \
