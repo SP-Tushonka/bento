@@ -189,7 +189,7 @@ public static class Preflight
 
         return result.StdOut;
     }
-    
+
     private static string AssetPath(string serverPath, bool nodeServer, params string[] segments)
     {
         return nodeServer

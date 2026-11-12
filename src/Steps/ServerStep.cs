@@ -58,7 +58,7 @@ public static class ServerStep
                 throw new StageFailedException(Stage, $"Server publish for {platform} failed (exit {exitCode}).");
             }
         }
-        
+
         var artifacts = new ServerArtifacts([
             layout.PublishDir(ctx.BuildConfig, "linux-x64"),
             layout.PublishDir(ctx.BuildConfig, "win-x64"),

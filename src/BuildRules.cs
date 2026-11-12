@@ -161,7 +161,7 @@ public static partial class BuildRules
         var next = rest.IndexOf('.');
         return int.Parse(next < 0 ? rest : rest[..next]);
     }
-    
+
     public static string RuntimeFolderFor(string version)
     {
         var major = MajorOf(version);

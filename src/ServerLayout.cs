@@ -74,7 +74,7 @@ public sealed record ServerLayout(string RepoPath, string Prefix, string TargetF
         ids.Sort(StringComparer.Ordinal);
         return ids;
     }
-    
+
     private static string ReadTargetFramework(string repoPath)
     {
         foreach (var name in new[] { "Build.props", "Directory.Build.props" })
