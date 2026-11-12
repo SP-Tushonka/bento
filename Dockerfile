@@ -8,8 +8,9 @@ RUN dotnet publish Bento.csproj -c Release -o /app
 FROM mcr.microsoft.com/dotnet/sdk:10.0
 RUN apt-get update && apt-get install -y --no-install-recommends git git-lfs p7zip-full jq curl ca-certificates sshpass openssh-client rclone xz-utils && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# The pre-4.1 launcher's SPT.Build project shells out to pwsh in a PostBuild target.
-RUN dotnet tool install --tool-path /usr/local/bin PowerShell
+# The pre-4.1 launcher's SPT.Build project shells out to pwsh in a PostBuild target. Pinned since 7.7.0 is published
+# before its powershell.linux-x64 package, which fails the install.
+RUN dotnet tool install --tool-path /usr/local/bin PowerShell --version 7.6.10
 
 # For older 3.x builds, install their node versions
 RUN set -eux; \
