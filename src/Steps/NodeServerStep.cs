@@ -32,14 +32,24 @@ public static class NodeServerStep
 
         var task = ctx.BuildType.ToNodeBuildTask();
         log.Status(Stage, $"building {task} for win32-x64...");
-        await RunNpmAsync(
-            toolchain,
-            ["run", task, "--", "--arch=x64", "--platform=win32"],
-            projectDir,
-            task,
-            log,
-            cancellationToken
-        );
+        var gulpfile = Path.Combine(projectDir, "gulpfile.mjs");
+        var original = await File.ReadAllTextAsync(gulpfile, cancellationToken);
+        await File.WriteAllTextAsync(gulpfile, WithoutBytecode(original, gulpfile), cancellationToken);
+        try
+        {
+            await RunNpmAsync(
+                toolchain,
+                ["run", task, "--", "--arch=x64", "--platform=win32"],
+                projectDir,
+                task,
+                log,
+                cancellationToken
+            );
+        }
+        finally
+        {
+            await File.WriteAllTextAsync(gulpfile, original, CancellationToken.None);
+        }
 
         var buildDir = Path.Combine(projectDir, "build");
         foreach (var expected in new[] { "SPT.Server.exe", "SPT_Data" })
@@ -55,7 +65,25 @@ public static class NodeServerStep
 
         return new ServerArtifacts([buildDir]);
     }
-    
+
+    // pkg's bytecode comes from the Linux Node bento runs. The Windows Node 22 of 3.11 rejects it and exits with code 4.
+    private static string WithoutBytecode(string gulpfile, string path)
+    {
+        if (gulpfile.Contains("--no-bytecode", StringComparison.Ordinal))
+        {
+            return gulpfile;
+        }
+
+        const string output = "\"--output\",";
+        var at = gulpfile.IndexOf(output, StringComparison.Ordinal);
+        if (at < 0)
+        {
+            throw new StageFailedException(Stage, $"Could not find the pkg arguments in {path}.");
+        }
+
+        return gulpfile.Insert(at, "\"--no-bytecode\", \"--public-packages\", \"*\", \"--public\", ");
+    }
+
     private static async Task VerifyNodeAsync(NodeToolchain toolchain, BuildLogger log)
     {
         var (exitCode, stdOut, stdErr) = await ProcessRunner.CaptureAsync(toolchain.NodePath, ["--version"]);
@@ -104,7 +132,7 @@ public static class NodeServerStep
             throw new StageFailedException(Stage, $"Server {what} failed (exit {exitCode}).");
         }
     }
-    
+
     private static async Task<(string AsOf, string Revision)> DependencyDateAsync(string repoPath)
     {
         var (described, tag, _) = await ProcessRunner.CaptureAsync(
